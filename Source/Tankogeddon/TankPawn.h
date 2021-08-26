@@ -22,6 +22,9 @@ public:
 	UFUNCTION()
 	void MoveForward(float AxisValue);
 
+	UFUNCTION()
+	void MoveRight(float AxisValue);
+
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;
@@ -50,4 +53,5 @@ public:
 
 private:
 	float _targetForwardAxisValue;
+	float _targetRightAxisValue;
 };
