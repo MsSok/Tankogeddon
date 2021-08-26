@@ -2,4 +2,10 @@ D:\GameDev\UnrealEngine\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Developme
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
 D:\GameDev\UnrealEngine\Tankogeddon\Source\Tankogeddon/TankPawn.h
+D:\GameDev\UnrealEngine\Tankogeddon\Source\Tankogeddon\Cannon.h
+D:\GameDev\UnrealEngine\Tankogeddon\Source\Tankogeddon\GameStructs.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Engine\Classes\Engine/UserDefinedStruct.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\UserDefinedStruct.generated.h
+D:\GameDev\UnrealEngine\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\GameStructs.generated.h
+D:\GameDev\UnrealEngine\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\Cannon.generated.h
 D:\GameDev\UnrealEngine\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\TankPawn.generated.h

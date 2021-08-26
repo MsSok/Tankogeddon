@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\Tankogeddon.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{7FA59C36-B97F-45A9-95CE-50700248661F}</UniqueIdentifier>
+      <UniqueIdentifier>{948ADF6F-C0FE-4D81-AF9A-09701E3E98C6}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\Tankogeddon.Target.cs">
       <Filter>Source</Filter>
@@ -11,8 +11,9 @@
     <None Include="..\..\Source\TankogeddonEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.gitignore.gitignore" />
     <Filter Include="Config">
-      <UniqueIdentifier>{4FCE1195-C4C5-4F3F-8E98-7CB35E6D8FC3}</UniqueIdentifier>
+      <UniqueIdentifier>{DA14F143-C05A-4BA4-B5BC-F2E9F943947F}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -23,9 +24,21 @@
     <None Include="..\..\Config\DefaultGame.ini">
       <Filter>Config</Filter>
     </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
     <Filter Include="Source\Tankogeddon">
-      <UniqueIdentifier>{72FC7C16-6E43-4068-B305-A47BF112384F}</UniqueIdentifier>
+      <UniqueIdentifier>{8AF31024-77EF-4DE0-B7F1-80004D0F562B}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\Tankogeddon\Cannon.cpp">
+      <Filter>Source\Tankogeddon</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Tankogeddon\Cannon.h">
+      <Filter>Source\Tankogeddon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Tankogeddon\GameStructs.h">
+      <Filter>Source\Tankogeddon</Filter>
+    </ClInclude>
     <None Include="..\..\Source\Tankogeddon\Tankogeddon.Build.cs">
       <Filter>Source\Tankogeddon</Filter>
     </None>
