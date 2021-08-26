@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
+#include "Tankogeddon.h"
 
 ACannon::ACannon() {
 	PrimaryActorTick.bCanEverTick = false;
@@ -20,13 +21,15 @@ ACannon::ACannon() {
 }
 
 void ACannon::Fire() {
-	if (!ReadyToFire) {
+	if (!ReadyToFire || Ammu <= 0) {
 		return;
 	}
 	ReadyToFire = false;
+	--Ammu;
 
 	if (Type == ECannonType::FireProjectile) {
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
+		//GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, TEXT("Fire - projectile!"));
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, FString::Printf(TEXT("Fire! Ammo: %d"), Ammu));
 	} else {
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
 	}
@@ -34,14 +37,39 @@ void ACannon::Fire() {
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
 }
 
-bool ACannon::IsReadyToFire()
-{
+
+void ACannon::FireSpecial() {
+	if (!_HasSpecialFire || !ReadyToFire || Ammu <= 0)
+	{
+		return;
+	}
+
+	//ReadyToFire = false;
+	_HasSpecialFire = false;
+	--Ammu;
+
+	if (Type == ECannonType::FireProjectile) {
+		//GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, TEXT("Fire special - projectile!"));
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, FString::Printf(TEXT("SpecialFire! Ammo: %d"), Ammu));
+	} else {
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire special - trace");
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1.f / FireRate, false);
+}
+
+bool ACannon::IsReadyToFire() const {
 	return ReadyToFire;
+}
+
+bool ACannon::HasSpecialFire() const {
+	return _HasSpecialFire;
 }
 
 void ACannon::Reload()
 {
 	ReadyToFire = true;
+	_HasSpecialFire = true;
 }
 
 void ACannon::BeginPlay()

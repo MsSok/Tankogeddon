@@ -34,6 +34,9 @@ public:
 	UFUNCTION()
 	void Fire();
 
+	UFUNCTION()
+	void FireSpecial();
+
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;
