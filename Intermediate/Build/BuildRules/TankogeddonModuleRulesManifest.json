@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"D:\\GameDev\\UnrealEngine\\Tankogeddon\\Source\\Tankogeddon\\Tankogeddon.Build.cs",
-		"D:\\GameDev\\UnrealEngine\\Tankogeddon\\Source\\Tankogeddon.Target.cs",
-		"D:\\GameDev\\UnrealEngine\\Tankogeddon\\Source\\TankogeddonEditor.Target.cs"
-	],
-	"EngineVersion": "4.26.2"
-}

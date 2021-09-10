@@ -1,2 +1,0 @@
-D:\GameDev\UnrealEngine\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\Definitions.Tankogeddon.h
-D:\GameDev\UnrealEngine\Tankogeddon\Source\Tankogeddon\Tankogeddon.h

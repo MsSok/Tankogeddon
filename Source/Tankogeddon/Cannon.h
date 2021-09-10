@@ -7,7 +7,10 @@
 #include "GameFramework/Actor.h"
 #include "Cannon.generated.h"
 
+class UStaticMeshComponent;
 class UArrowComponent;
+class AProjectile;
+class USceneComponent;
 
 UCLASS()
 class TANKOGEDDON_API ACannon : public AActor
@@ -15,6 +18,9 @@ class TANKOGEDDON_API ACannon : public AActor
 	GENERATED_BODY()
 	
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* SceneComponent;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* Mesh;
 
@@ -35,6 +41,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	int Ammu = 10;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+	TSubclassOf<AProjectile> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	ECannonType Type = ECannonType::FireProjectile;
