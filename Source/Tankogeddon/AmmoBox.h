@@ -5,6 +5,9 @@
 #include "GameFramework/Actor.h"
 #include "AmmoBox.generated.h"
 
+class UStaticMeshComponent;
+class ACannon;
+
 UCLASS()
 class TANKOGEDDON_API AAmmoBox : public AActor
 {
@@ -16,6 +19,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
 	TSubclassOf<ACannon> CannonClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
+	int NumAmmo;
 
 public:
 	AAmmoBox();

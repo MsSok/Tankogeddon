@@ -40,26 +40,41 @@ void ATankPawn::BeginPlay()
 }
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> InCannonClass) {
-	if (Cannon) {
-		Cannon->Destroy();
+	if (ActiveCannon) {
+		ActiveCannon->Destroy();
+		ActiveCannon = nullptr;
 	}
 
 	FActorSpawnParameters Params;
 	Params.Instigator = this;
 	Params.Owner = this;
-	Cannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, Params);
-	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	ActiveCannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, Params);
+	ActiveCannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
 
 void ATankPawn::Fire() {
-	if (Cannon) {
-		Cannon->Fire();
+	if (ActiveCannon) {
+		ActiveCannon->Fire();
 	}
 }
 
 void ATankPawn::FireSpecial() {
-	if (Cannon) {
-		Cannon->FireSpecial();
+	if (ActiveCannon) {
+		ActiveCannon->FireSpecial();
+	}
+}
+
+void ATankPawn::CycleCannon()
+{
+	Swap(ActiveCannon, InactiveCannon);
+	if (ActiveCannon)
+	{
+		ActiveCannon->SetVisibility(true);
+	}
+
+	if (InactiveCannon)
+	{
+		InactiveCannon->SetVisibility(false);
 	}
 }
 
@@ -109,4 +124,9 @@ void ATankPawn::MoveRight(float AxisValue)
 void ATankPawn::RotateRight(float AxisValue)
 {
 	_targetRotateRightAxisValue = AxisValue;
+}
+
+ACannon* ATankPawn::GetActiveCannon() const
+{
+	return ActiveCannon;
 }

@@ -11,6 +11,7 @@ class UStaticMeshComponent;
 class UArrowComponent;
 class AProjectile;
 class USceneComponent;
+class AAmmoBox;
 
 UCLASS()
 class TANKOGEDDON_API ACannon : public AActor
@@ -40,7 +41,7 @@ protected:
 	bool _HasSpecialFire = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-	int Ammu = 10;
+	int MaxAmmo = 10;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	TSubclassOf<AProjectile> ProjectileClass;
@@ -59,9 +60,13 @@ public:
 	void FireSpecial();
 	bool IsReadyToFire() const;
 	bool HasSpecialFire() const;
+	void SetVisibility(bool bIsVisible);
+	void AddAmmo(int InNumAmmo);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void Reload();
+
+	int NumAmmo = 10;
 };

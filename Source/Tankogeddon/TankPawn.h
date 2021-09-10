@@ -40,6 +40,12 @@ public:
 	UFUNCTION()
 	void SetupCannon(TSubclassOf<ACannon> InCannonClass);
 
+	UFUNCTION()
+	void CycleCannon();
+
+	UFUNCTION()
+	ACannon* GetActiveCannon() const;
+
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;
@@ -75,7 +81,10 @@ protected:
 	ATankPlayerController* TankController;
 	
 	UPROPERTY()
-	ACannon* Cannon;
+	ACannon* ActiveCannon;
+
+	UPROPERTY()
+	ACannon* InactiveCannon;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

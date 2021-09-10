@@ -8,6 +8,7 @@
 #include "Tankogeddon.h"
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
+#include "AmmoBox.h"
 
 ACannon::ACannon() {
 	PrimaryActorTick.bCanEverTick = false;
@@ -23,15 +24,15 @@ ACannon::ACannon() {
 }
 
 void ACannon::Fire() {
-	if (!ReadyToFire || Ammu <= 0) {
+	if (!ReadyToFire || NumAmmo <= 0) {
 		return;
 	}
 	ReadyToFire = false;
-	--Ammu;
+	--NumAmmo;
 
 	if (Type == ECannonType::FireProjectile) {
 		//GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, TEXT("Fire - projectile!"));
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, FString::Printf(TEXT("Fire! Ammo: %d"), Ammu));
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, FString::Printf(TEXT("Fire! Ammo: %d"), NumAmmo));
 		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 		if (projectile)
 		{
@@ -65,18 +66,18 @@ void ACannon::Fire() {
 
 
 void ACannon::FireSpecial() {
-	if (!_HasSpecialFire || !ReadyToFire || Ammu <= 0)
+	if (!_HasSpecialFire || !ReadyToFire || NumAmmo <= 0)
 	{
 		return;
 	}
 
 	//ReadyToFire = false;
 	_HasSpecialFire = false;
-	--Ammu;
+	--NumAmmo;
 
 	if (Type == ECannonType::FireProjectile) {
 		//GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, TEXT("Fire special - projectile!"));
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, FString::Printf(TEXT("SpecialFire! Ammo: %d"), Ammu));
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, FString::Printf(TEXT("SpecialFire! Ammo: %d"), NumAmmo));
 		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 		if (projectile)
 		{
@@ -126,4 +127,15 @@ void ACannon::BeginPlay()
 {
 	Super::BeginPlay();
 	Reload();
+}
+
+void ACannon::SetVisibility(bool bIsVisible)
+{
+	Mesh->SetHiddenInGame(!bIsVisible);
+}
+
+void ACannon::AddAmmo(int InNumAmmo)
+{
+	NumAmmo = FMath::Clamp(NumAmmo + InNumAmmo, 0, MaxAmmo);
+	UE_LOG(LogTemp, Log, TEXT("AddAmmo(%d)! NumAmmo: %d"), InNumAmmo, NumAmmo);
 }
