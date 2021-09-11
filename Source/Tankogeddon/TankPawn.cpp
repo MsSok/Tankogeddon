@@ -1,11 +1,16 @@
 
 #include "TankPawn.h"
-#include "Components/StaticMeshComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
+#include <Components/StaticMeshComponent.h>
+#include <GameFramework/SpringArmComponent.h>
+#include <Camera/CameraComponent.h>
+#include <Math/UnrealMathUtility.h>
+#include <Kismet/KismetMathLibrary.h>
+#include <Components/ArrowComponent.h>
+#include "Tankogeddon.h"
 #include "TankPlayerController.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Components/ArrowComponent.h"
+#include "Cannon.h"
+#include "HealthComponent.h"
+#include <Components/BoxComponent.h>
 
 ATankPawn::ATankPawn()
 {
@@ -29,7 +34,30 @@ ATankPawn::ATankPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
+	HealthComponent->OnDie.AddUObject(this, &ATankPawn::Die);
+	HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
+
+	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
+	HitCollider->SetupAttachment(BodyMesh);
 }
+
+void ATankPawn::TakeDamage(FDamageData DamageData)
+{
+	HealthComponent->TakeDamage(DamageData);
+}
+
+void ATankPawn::Die()
+{
+	Destroy();
+}
+
+void ATankPawn::DamageTaked(float DamageValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
+}
+
 
 // Called when the game starts or when spawned
 void ATankPawn::BeginPlay()

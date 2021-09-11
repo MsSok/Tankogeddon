@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+class UStaticMeshComponent;
+
 UCLASS()
 class TANKOGEDDON_API AProjectile : public AActor
 {

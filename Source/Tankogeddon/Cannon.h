@@ -68,5 +68,5 @@ protected:
 	virtual void BeginPlay() override;
 	void Reload();
 
-	int NumAmmo = 10;
+	int NumAmmo = 20;
 };

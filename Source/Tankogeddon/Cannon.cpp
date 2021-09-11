@@ -36,6 +36,7 @@ void ACannon::Fire() {
 		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 		if (projectile)
 		{
+			projectile->SetInstigator(GetInstigator());
 			projectile->Start();
 		}
 	} else {
@@ -81,6 +82,7 @@ void ACannon::FireSpecial() {
 		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 		if (projectile)
 		{
+			projectile->SetInstigator(GetInstigator());
 			projectile->Start();
 		}
 	} else {
