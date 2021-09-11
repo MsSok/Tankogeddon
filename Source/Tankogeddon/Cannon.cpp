@@ -9,6 +9,7 @@
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
 #include "AmmoBox.h"
+#include "DamageTaker.h"
 
 ACannon::ACannon() {
 	PrimaryActorTick.bCanEverTick = false;
@@ -37,6 +38,7 @@ void ACannon::Fire() {
 		if (projectile)
 		{
 			projectile->SetInstigator(GetInstigator());
+			projectile->OnDestroyedTarget.AddUObject(this, &ACannon::NotifyTargetDestroyed);
 			projectile->Start();
 		}
 	} else {
@@ -51,9 +53,27 @@ void ACannon::Fire() {
 		if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility, traceParams))
 		{
 			DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Red, false, 0.5f, 0, 5);
-			if (hitResult.Actor.Get())
+			bool bWasTargetDestroyed = false;
+			if (hitResult.Component.IsValid() && hitResult.Component->GetCollisionObjectType() == ECollisionChannel::ECC_Destructible)
 			{
 				hitResult.Actor.Get()->Destroy();
+				bWasTargetDestroyed = true;
+			}
+			else if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(hitResult.Actor))
+			{
+				AActor* MyInstigator = GetInstigator();
+				if (hitResult.Actor != MyInstigator)
+				{
+					FDamageData DamageData;
+					DamageData.DamageValue = FireDamage;
+					DamageData.DamageMaker = this;
+					DamageData.Instigator = MyInstigator;
+					bWasTargetDestroyed = DamageTaker->TakeDamage(DamageData);
+				}
+			}
+			if (bWasTargetDestroyed)
+			{
+				NotifyTargetDestroyed(hitResult.Actor.Get());
 			}
 		}
 		else
@@ -65,6 +85,13 @@ void ACannon::Fire() {
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
 }
 
+void ACannon::NotifyTargetDestroyed(AActor* Target)
+{
+	if (OnDestroyedTarget.IsBound())
+	{
+		OnDestroyedTarget.Broadcast(Target);
+	}
+}
 
 void ACannon::FireSpecial() {
 	if (!_HasSpecialFire || !ReadyToFire || NumAmmo <= 0)
@@ -97,9 +124,17 @@ void ACannon::FireSpecial() {
 		if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility, traceParams))
 		{
 			DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Yellow, false, 0.5f, 0, 5);
-			if (hitResult.Actor.Get())
+			if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(hitResult.Actor))
 			{
-				hitResult.Actor.Get()->Destroy();
+				AActor* MyInstigator = GetInstigator();
+				if (hitResult.Actor != MyInstigator)
+				{
+					FDamageData DamageData;
+					DamageData.DamageValue = FireDamage;
+					DamageData.DamageMaker = this;
+					DamageData.Instigator = MyInstigator;
+					DamageTaker->TakeDamage(DamageData);
+				}
 			}
 		}
 		else

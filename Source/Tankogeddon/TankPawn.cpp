@@ -11,19 +11,11 @@
 #include "Cannon.h"
 #include "HealthComponent.h"
 #include <Components/BoxComponent.h>
+#include "Scorable.h"
 
 ATankPawn::ATankPawn()
 {
-	PrimaryActorTick.bCanEverTick = true;
-
-	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tank body"));
-	RootComponent = BodyMesh;
-
-	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tank turret"));
-	TurretMesh->SetupAttachment(BodyMesh);
-
-	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Cannon setup point"));
-	CannonSetupPoint->AttachToComponent(TurretMesh, FAttachmentTransformRules::KeepRelativeTransform);
+	PrimaryActorTick.bCanEverTick = true;	
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
 	SpringArm->SetupAttachment(BodyMesh);
@@ -34,75 +26,21 @@ ATankPawn::ATankPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
-
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
-	HealthComponent->OnDie.AddUObject(this, &ATankPawn::Die);
-	HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
-
-	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
-	HitCollider->SetupAttachment(BodyMesh);
 }
-
-void ATankPawn::TakeDamage(FDamageData DamageData)
-{
-	HealthComponent->TakeDamage(DamageData);
-}
-
-void ATankPawn::Die()
-{
-	Destroy();
-}
-
-void ATankPawn::DamageTaked(float DamageValue)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
-}
-
 
 // Called when the game starts or when spawned
 void ATankPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	TankController = Cast<ATankPlayerController>(GetController());
-	SetupCannon(CannonClass);
 }
 
-void ATankPawn::SetupCannon(TSubclassOf<ACannon> InCannonClass) {
-	if (ActiveCannon) {
-		ActiveCannon->Destroy();
-		ActiveCannon = nullptr;
-	}
-
-	FActorSpawnParameters Params;
-	Params.Instigator = this;
-	Params.Owner = this;
-	ActiveCannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, Params);
-	ActiveCannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-}
-
-void ATankPawn::Fire() {
-	if (ActiveCannon) {
-		ActiveCannon->Fire();
-	}
-}
-
-void ATankPawn::FireSpecial() {
-	if (ActiveCannon) {
-		ActiveCannon->FireSpecial();
-	}
-}
-
-void ATankPawn::CycleCannon()
+void ATankPawn::TargetDestroyed(AActor* Target)
 {
-	Swap(ActiveCannon, InactiveCannon);
-	if (ActiveCannon)
+	if (IScorable* Scorable = Cast<IScorable>(Target))
 	{
-		ActiveCannon->SetVisibility(true);
-	}
-
-	if (InactiveCannon)
-	{
-		InactiveCannon->SetVisibility(false);
+		AccumulatedScores += Scorable->GetScores();
+		UE_LOG(LogTemp, Log, TEXT("Destroyed target %s. Current scores: %d"), *Target->GetName(), AccumulatedScores);
 	}
 }
 
@@ -152,9 +90,4 @@ void ATankPawn::MoveRight(float AxisValue)
 void ATankPawn::RotateRight(float AxisValue)
 {
 	_targetRotateRightAxisValue = AxisValue;
-}
-
-ACannon* ATankPawn::GetActiveCannon() const
-{
-	return ActiveCannon;
 }

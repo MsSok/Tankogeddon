@@ -3,24 +3,39 @@
 UHealthComponent::UHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+
+void UHealthComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
 	CurrentHealth = MaxHealth;
 }
 
-void UHealthComponent::TakeDamage(FDamageData DamageData)
+bool UHealthComponent::TakeDamage(FDamageData DamageData)
 {
-	float takedDamageValue = DamageData.DamageValue;
-	CurrentHealth -= takedDamageValue;
+	float TakenDamage = DamageData.DamageValue;
+	CurrentHealth -= TakenDamage;
 
-	if (CurrentHealth <= 0)
+	bool bWasDestroyed = false;
+	if (CurrentHealth <= 0.f)
 	{
+		bWasDestroyed = true;
 		if (OnDie.IsBound())
+		{
 			OnDie.Broadcast();
+		}
 	}
 	else
 	{
 		if (OnDamaged.IsBound())
-			OnDamaged.Broadcast(takedDamageValue);
+		{
+			OnDamaged.Broadcast(TakenDamage);
+		}
 	}
+
+	return bWasDestroyed;
 }
 
 float UHealthComponent::GetHealth() const
@@ -37,5 +52,7 @@ void UHealthComponent::AddHealth(float AddiditionalHealthValue)
 {
 	CurrentHealth += AddiditionalHealthValue;
 	if (CurrentHealth > MaxHealth)
+	{
 		CurrentHealth = MaxHealth;
+	}
 }

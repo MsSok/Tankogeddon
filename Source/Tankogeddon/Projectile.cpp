@@ -27,25 +27,31 @@ void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
 	AActor* owner = GetOwner();
 	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
-	if (OtherActor != owner && OtherActor != ownerByOwner)
-	{
-		IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
-		if (damageTakerActor)
-		{
-			FDamageData damageData;
-			damageData.DamageValue = Damage;
-			damageData.Instigator = owner;
-			damageData.DamageMaker = this;
 
-			damageTakerActor->TakeDamage(damageData);
-		}
-		else
-		{
-			OtherActor->Destroy();
-		}
+	bool bWasTargetDestroyed = false;
+    if (OtherComp && OtherComp->GetCollisionObjectType() == ECollisionChannel::ECC_Destructible)
+    {
+        OtherActor->Destroy();
+        bWasTargetDestroyed = true;
+    }
+    else if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(OtherActor))
+    {
+        AActor* MyInstigator = GetInstigator();
+        if (OtherActor != MyInstigator)
+        {
+            FDamageData DamageData;
+            DamageData.DamageValue = Damage;
+            DamageData.DamageMaker = this;
+            DamageData.Instigator = MyInstigator;
+            DamageTaker->TakeDamage(DamageData);
+            bWasTargetDestroyed = DamageTaker->TakeDamage(DamageData);
+        }
+    }
 
-		Destroy();
-	}
+    if (bWasTargetDestroyed && OnDestroyedTarget.IsBound())
+    {
+        OnDestroyedTarget.Broadcast(OtherActor);
+    }
 }
 
 void AProjectile::Move()

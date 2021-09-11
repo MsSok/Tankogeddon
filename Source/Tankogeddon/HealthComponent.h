@@ -11,25 +11,29 @@ class TANKOGEDDON_API UHealthComponent : public UActorComponent
 {
     GENERATED_BODY()
 
-    DECLARE_EVENT(UHealthComponent, FOnDie)
-    DECLARE_EVENT_OneParam(UHealthComponent, FOnHealthChanged, float)
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, DamageValue);
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDie);
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
-    float MaxHealth = 10;
+    float MaxHealth = 10.f;
 
     UPROPERTY()
     float CurrentHealth;
 
 public:
+    UPROPERTY(BlueprintAssignable)
     FOnDie OnDie;
+
+    UPROPERTY(BlueprintAssignable)
     FOnHealthChanged OnDamaged;
 
 public:
-    // Sets default values for this component's properties
     UHealthComponent();
 
-    void TakeDamage(FDamageData DamageData);
+    virtual void BeginPlay() override;
+
+    bool TakeDamage(FDamageData DamageData);
 
     float GetHealth() const;
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameStructs.h"
 #include "GameFramework/Actor.h"
+#include "DamageTaker.h"
 #include "Cannon.generated.h"
 
 class UStaticMeshComponent;
@@ -63,10 +64,15 @@ public:
 	void SetVisibility(bool bIsVisible);
 	void AddAmmo(int InNumAmmo);
 
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDestoyedTarget, AActor*);
+	FOnDestoyedTarget OnDestroyedTarget;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void Reload();
 
-	int NumAmmo = 20;
+	void NotifyTargetDestroyed(AActor* Target);
+
+	int NumAmmo = 10;
 };
