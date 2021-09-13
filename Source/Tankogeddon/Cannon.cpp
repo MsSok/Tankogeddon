@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Cannon.h"
 #include "Components/ArrowComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -51,7 +49,8 @@ void ACannon::Fire() {
 			projectile->OnDestroyedTarget.AddUObject(this, &ACannon::NotifyTargetDestroyed);
 			projectile->Start();
 		}
-	} else {
+	}
+	else {
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
 		FHitResult hitResult;
 		FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
@@ -141,7 +140,8 @@ void ACannon::FireSpecial() {
 			projectile->SetInstigator(GetInstigator());
 			projectile->Start();
 		}
-	} else {
+	}
+	else {
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire special - trace");
 		FHitResult hitResult;
 		FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);

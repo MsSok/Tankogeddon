@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -22,7 +20,7 @@ UCLASS()
 class TANKOGEDDON_API ACannon : public AActor
 {
 	GENERATED_BODY()
-	
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* SceneComponent;
@@ -70,7 +68,7 @@ protected:
 
 	bool ReadyToFire = false;
 
-public:	
+public:
 	// Sets default values for this actor's properties
 	ACannon();
 	void Fire();

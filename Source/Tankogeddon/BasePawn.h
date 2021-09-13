@@ -12,6 +12,8 @@ class UArrowComponent;
 class ACannon;
 class UHealthComponent;
 class UBoxComponent;
+class UParticleSystem;
+class USoundBase;
 
 UCLASS()
 class TANKOGEDDON_API ABasePawn : public APawn, public IDamageTaker
@@ -40,10 +42,23 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Cannon")
     TSubclassOf<ACannon> CannonClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+    UParticleSystem* DestuctionParticleSystem;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+    USoundBase* DestructionSound;
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
     virtual void Destroyed() override;
     virtual void TargetDestroyed(AActor* Target);
+
+
+    UFUNCTION()
+    void Die();
+
+    UFUNCTION()
+    void DamageTaken(float InDamage);
 
 public:
     UFUNCTION()
@@ -73,10 +88,4 @@ private:
 
     UPROPERTY()
     ACannon* InactiveCannon;
-
-    UFUNCTION()
-    void Die();
-
-    UFUNCTION()
-    void DamageTaken(float InDamage);
 };

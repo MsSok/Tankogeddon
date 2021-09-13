@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 
 #include "CoreMinimal.h"
 #include "DamageTaker.h"
@@ -20,25 +21,25 @@ class TANKOGEDDON_API ATurret : public ABasePawn, public IScorable
 
 protected:
     UPROPERTY()
-    APawn* PlayerPawn;
+        APawn* PlayerPawn;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
-    float TargetingRange = 1000;
+        float TargetingRange = 1000;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
-    float TargetingSpeed = 0.1f;
+        float TargetingSpeed = 0.1f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
-    float TargetingRate = 0.005f;
+        float TargetingRate = 0.005f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
-    float Accurency = 10;
+        float Accurency = 10;
 
     const FString BodyMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Tower1.SM_CSC_Tower1'";
     const FString TurretMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Gun1.SM_CSC_Gun1'";
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scorable")
-    int DestructionScores = 5;
+        int DestructionScores = 5;
 
 public:
     ATurret();

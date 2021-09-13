@@ -106,3 +106,24 @@ void ATankPawn::RotateRight(float AxisValue)
 {
 	_targetRotateRightAxisValue = AxisValue;
 }
+
+void ATankPawn::DamageTaken(float InDamage)
+{
+	Super::DamageTaken(InDamage);
+
+	if (this == GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		if (HitForceEffect)
+		{
+			FForceFeedbackParameters HitForceEffectParams;
+			HitForceEffectParams.bLooping = false;
+			HitForceEffectParams.Tag = "HitForceEffectParams";
+			GetWorld()->GetFirstPlayerController()->ClientPlayForceFeedback(HitForceEffect, HitForceEffectParams);
+		}
+
+		if (HitShake)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitShake);
+		}
+	}
+}
