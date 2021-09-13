@@ -48,12 +48,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float InterpolationKey = 0.1f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Speed")
-	float TurretRotationInterpolationKey = 0.5f;
-
-	UPROPERTY()
-	ATankPlayerController* TankController;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points", Meta = (MakeEditWidget = true))
 	TArray<FVector> PatrollingPoints;
 
@@ -80,15 +74,6 @@ public:
 
 	UFUNCTION()
 	float GetMovementAccurency() { return MovementAccuracy; };
-
-	UFUNCTION()
-	FVector GetTurretForwardVector();
-
-	UFUNCTION()
-	void RotateTurretTo(FVector TargetPosition);
-
-	UFUNCTION()
-	FVector GetEyesPosition();
 
 private:
 	float _targetForwardAxisValue = 0.f;

@@ -58,6 +58,11 @@ void ATankPlayerController::Tick(float DeltaTime)
 	FVector dir = MousePos - pawnPos;
 	dir.Normalize();
 	MousePos = pawnPos + dir * 1000;
+
+	if (TankPawn)
+	{
+		TankPawn->SetTurretTarget(MousePos);
+	}
 }
 
 void ATankPlayerController::Fire()

@@ -9,7 +9,6 @@ void ATankAIController::BeginPlay()
     Super::BeginPlay();
 
     TankPawn = Cast<ATankPawn>(GetPawn());
-    PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
     MovementAccuracy = TankPawn->GetMovementAccurency();
     TArray<FVector> Points = TankPawn->GetPatrollingPoints();
 
@@ -26,6 +25,11 @@ void ATankAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    if (!TankPawn)
+    {
+        return;
+    }
+
     if (CurrentPatrolPointIndex == INDEX_NONE)
     {
         TankPawn->MoveForward(0.f);
@@ -37,8 +41,6 @@ void ATankAIController::Tick(float DeltaTime)
     float RotationValue = GetRotationValue();
     //UE_LOG(LogTemp, Warning, TEXT("AI Rotation forwardAngle: %f rightAngle: %f rotationValue: %f"), forwardAngle, rightAngle, rotationValue);
     TankPawn->RotateRight(RotationValue);
-
-    Targeting();
 }
 
 float ATankAIController::GetRotationValue()
@@ -75,72 +77,4 @@ float ATankAIController::GetRotationValue()
     }
 
     return RotationValue;
-}
-
-void ATankAIController::Targeting()
-{
-    if (DetectCanFire())
-    {
-        Fire();
-    }
-    else
-    {
-        RotateToPlayer();
-    }
-}
-
-void ATankAIController::RotateToPlayer()
-{
-    if (IsPlayerInRange())
-    {
-        TankPawn->RotateTurretTo(PlayerPawn->GetActorLocation());
-    }
-}
-
-bool ATankAIController::IsPlayerInRange()
-{
-    return FVector::Distance(TankPawn->GetActorLocation(), PlayerPawn->GetActorLocation()) <= TargetingRange;
-}
-
-bool ATankAIController::DetectCanFire()
-{
-    if (!DetectPlayerVisibility())
-    {
-        return false;
-    }
-
-    FVector TargetingDir = TankPawn->GetTurretForwardVector();
-    FVector DirToPlayer = PlayerPawn->GetActorLocation() - TankPawn->GetActorLocation();
-    DirToPlayer.Normalize();
-    float AimAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(TargetingDir, DirToPlayer)));
-    return AimAngle <= Accuracy;
-}
-
-void ATankAIController::Fire()
-{
-    TankPawn->Fire();
-}
-
-bool ATankAIController::DetectPlayerVisibility()
-{
-    FVector PlayerPos = PlayerPawn->GetActorLocation();
-    FVector EyesPos = TankPawn->GetEyesPosition();
-
-    FHitResult HitResult;
-    FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
-    traceParams.bTraceComplex = true;
-    traceParams.AddIgnoredActor(TankPawn);
-    traceParams.bReturnPhysicalMaterial = false;
-
-    if (GetWorld()->LineTraceSingleByChannel(HitResult, EyesPos, PlayerPos, ECollisionChannel::ECC_Visibility, traceParams))
-    {
-        if (HitResult.Actor.Get())
-        {
-            // DrawDebugLine(GetWorld(), EyesPos, HitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
-            return HitResult.Actor.Get() == PlayerPawn;
-        }
-    }
-
-    // DrawDebugLine(GetWorld(), EyesPos, PlayerPos, FColor::Cyan, false, 0.5f, 0, 10);
-    return false;
 }

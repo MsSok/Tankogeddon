@@ -10,7 +10,7 @@
 
 ABasePawn::ABasePawn()
 {
-    PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = true;
 
     BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
     BodyMesh->bEditableWhenInherited = true;
@@ -123,6 +123,26 @@ void ABasePawn::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TurretTarget);
+    FRotator CurrRotation = TurretMesh->GetComponentRotation();
+    TargetRotation.Pitch = CurrRotation.Pitch;
+    TargetRotation.Roll = CurrRotation.Roll;
+    TurretMesh->SetWorldRotation(FMath::RInterpConstantTo(CurrRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), TurretRotationSpeed));
+}
+
+FVector ABasePawn::GetTurretForwardVector()
+{
+    return TurretMesh->GetForwardVector();
+}
+
+void ABasePawn::SetTurretTarget(FVector TargetPosition)
+{
+    TurretTarget = TargetPosition;
+}
+
+FVector ABasePawn::GetEyesPosition()
+{
+    return CannonSetupPoint->GetComponentLocation();
 }
 
 void ABasePawn::Die()
