@@ -27,17 +27,26 @@ void ATankPlayerController::BeginPlay()
 
 void ATankPlayerController::MoveForward(float AxisValue)
 {
-	TankPawn->MoveForward(AxisValue);
+	if (TankPawn)
+	{
+		TankPawn->MoveForward(AxisValue);
+	}
 }
 
 void ATankPlayerController::MoveRight(float AxisValue)
 {
-	TankPawn->MoveRight(AxisValue);
+	if (TankPawn)
+	{
+		TankPawn->MoveRight(AxisValue);
+	}
 }
 
 void ATankPlayerController::RotateRight(float AxisValue)
 {
-	TankPawn->RotateRight(AxisValue);
+	if (TankPawn)
+	{
+		TankPawn->RotateRight(AxisValue);
+	}
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -49,20 +58,28 @@ void ATankPlayerController::Tick(float DeltaTime)
 	FVector dir = MousePos - pawnPos;
 	dir.Normalize();
 	MousePos = pawnPos + dir * 1000;
-	//DrawDebugLine(GetWorld(), pawnPos, MousePos, FColor::Green, false, 0.1f, 0, 5);
 }
 
 void ATankPlayerController::Fire()
 {
-	TankPawn->Fire();
+	if (TankPawn)
+	{
+		TankPawn->Fire();
+	}
 }
 
 void ATankPlayerController::FireSpecial()
 {
-	TankPawn->FireSpecial();
+	if (TankPawn)
+	{
+		TankPawn->FireSpecial();
+	}
 }
 
 void ATankPlayerController::CycleCannon()
 {
-	TankPawn->CycleCannon();
+	if (TankPawn)
+	{
+		TankPawn->CycleCannon();
+	}
 }

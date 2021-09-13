@@ -14,44 +14,42 @@ AProjectile::AProjectile()
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnMeshOverlapBegin);
 	Mesh->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+    Mesh->SetHiddenInGame(true);
 }
 
 void AProjectile::Start()
 {
 	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjectile::Move, MoveRate, true, MoveRate);
 	SetLifeSpan(FlyRange / MoveSpeed);
+    Mesh->SetHiddenInGame(false);
+    Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
+
 	AActor* owner = GetOwner();
 	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
 
-	bool bWasTargetDestroyed = false;
-    if (OtherComp && OtherComp->GetCollisionObjectType() == ECollisionChannel::ECC_Destructible)
-    {
-        OtherActor->Destroy();
-        bWasTargetDestroyed = true;
-    }
-    else if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(OtherActor))
-    {
-        AActor* MyInstigator = GetInstigator();
-        if (OtherActor != MyInstigator)
-        {
-            FDamageData DamageData;
-            DamageData.DamageValue = Damage;
-            DamageData.DamageMaker = this;
-            DamageData.Instigator = MyInstigator;
-            DamageTaker->TakeDamage(DamageData);
-            bWasTargetDestroyed = DamageTaker->TakeDamage(DamageData);
-        }
-    }
+	if (OtherActor != owner && OtherActor != ownerByOwner)
+	{
+		IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
+		if (damageTakerActor)
+		{
+			FDamageData damageData;
+			damageData.DamageValue = Damage;
+			damageData.Instigator = owner;
+			damageData.DamageMaker = this;
 
-    if (bWasTargetDestroyed && OnDestroyedTarget.IsBound())
-    {
-        OnDestroyedTarget.Broadcast(OtherActor);
-    }
+			damageTakerActor->TakeDamage(damageData);
+		}
+		else
+		{
+			OtherActor->Destroy();
+		}
+		Destroy();
+	}
 }
 
 void AProjectile::Move()
